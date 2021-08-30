@@ -13,3 +13,16 @@
   }, 10)
 */
 
+const promise = (resValue) => new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve(resValue);
+  }, 10);
+});
+const p1 = promise('hello');
+const p2 = p1.then((value1) => {
+  return promise(`${value1}lagou`);
+});
+const p3 = p2.then((value2) => {
+  setTimeout(console.log, 10, `${value2}I ♥ U`);
+});
+

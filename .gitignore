@@ -1,0 +1,19 @@
+# production
+/dist
+/build
+/cache
+*.tar.gz
+
+# app data
+/learnMaterial
+
+# ide
+.remote-sync.json
+.idea
+
+# misc
+*/.DS_Store
+package*
+
+/node_modules
+.DS_Store
