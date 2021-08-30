@@ -26,3 +26,17 @@ const p3 = p2.then((value2) => {
   setTimeout(console.log, 10, `${value2}I ♥ U`);
 });
 
+
+// 方法2
+async function asyncFn () {
+  // console.log(new Date().getTime());
+  const p1 = await promise('hello');
+  // console.log(new Date().getTime());
+  const p2 = await promise('lagou');
+  // console.log(new Date().getTime());
+  const p3 = await promise('I ♥ U');
+  console.log(p1 + p2 + p3);
+}
+
+asyncFn();
+
