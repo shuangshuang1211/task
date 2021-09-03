@@ -5,7 +5,8 @@
 *.tar.gz
 
 # app data
-/learnMaterial
+/learnMaterial/*
+!/learnMaterial/*.zip
 
 # ide
 .remote-sync.json

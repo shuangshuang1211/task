@@ -100,3 +100,24 @@
   console.log(res2);
   ```
 
+## ES6新特性
+
+-  **Proxy** 作用？通过代理的模式监视获取操作数据的行为
+
+  ```js
+  const obj = {};
+  const objProxy = new Proxy(obj, {
+    get: (target, property) => {
+       // 实现 一些操作监听等；
+      return Reflect.get(target, property)
+    }, // 获取obj相应的属性的时候会被监听到
+    set: (target, property, value) => ,
+    has, deleteProperty, getPrototypeOf, setPrototypeOf, isExtensible, apply, construct, defineProperty...
+  });
+  ```
+
+- Reflect ? 成员的方法就是Proxy处理对象的默认方法的实现，用途？提供统一的操作对象的api 
+
+  
+
+  

@@ -59,6 +59,10 @@ class MyPromise {
         rej(new TypeError('Type Error'));
       } else if (thenCallbackReturnValue instanceof MyPromise) {
         // 若then回调中返回的是一个promise的新实例则调用这个promise的then方法；
+        //（其实就相当于返回这个新的promise），这里理解错了***
+        // 因为在then里面已经返回了一个新的new promsie(thenPromise)，所以要把这个promise的结果通过实际返回的promise返回
+        // 如果是promise对象 查看promsie对象返回的结果
+        // 再根据promise对象返回的结果 决定调用resolve 还是调用reject
         thenCallbackReturnValue.then(res, rej);
       } else {
         // 若是其他值，则直接reslove；
@@ -68,33 +72,36 @@ class MyPromise {
 
     // 若then中回调不是函数则用(value) => value代替，只要resolve或reject值未被捕获就会一直传递下去
     let successCall = isFunc(successCallback) ? successCallback : (value) => value;
-    let failCall = isFunc(rejectCallback) ? rejectCallback : (value) => value;
+    // 若失败回调中传入一个非函数值，则需要抛出错误***
+    let failCall = isFunc(rejectCallback) ? rejectCallback : (reason) => { throw Error(reason) };
 
     // then 执行后会返回一个新的回调
     const thenPromise = new MyPromise((res, rej) => {
       // 定义执行成功回调函数后对返回结果的处理
       const thenSuccess = () => {
-        // 若then回调返回的Promise出现错误，需要被后续的then或catch捕获
-        try {
-          const thenValue = successCall(this.value);
-          setTimeout(() => {
-            // 异步调用是为了拿到thenPromise值
+        // 异步调用是为了拿到thenPromise值
+        setTimeout(() => {
+          // 若then回调返回的Promise出现错误，需要被后续的then或catch捕获
+          // 注意，要在timeOut内部try catch，因为这一步的目的是要捕获到会带哦中一些执行出现的错误，如果
+          // 放在外面，因为是异步执行TimeOut内的代码，所以try catch不会捕获到
+          try {
+            const thenValue = successCall(this.value);
             resolveThenValue(thenPromise, thenValue, res, rej);
-          });
-        } catch (err) {
-          rej(err);
-        }
+          } catch (err) {
+            rej(err);
+          }
+        });
       };
       // 定义执行Reject回调函数后对返回结果的处理
       const thenReject = () => {
-        const thenValue = failCall(this.reason);
-        try {
-          setTimeout(() => {
+        setTimeout(() => {
+          try {
+            const thenValue = failCall(this.reason);
             resolveThenValue(thenPromise, thenValue, res, rej);
-          });
-        } catch (err) {
-          rej(err);
-        }
+          } catch (err) {
+            rej(err);
+          }
+        });
       }
       if (this.status === FULFILLED) {
         // status 变为resolve则执行成功回调
@@ -156,7 +163,8 @@ class MyPromise {
       const addData = (value, index) => {
         res[index] = value;
         key ++;
-        if (key === res.length) {
+        // 要注意此时key值与实际传入的参数长度做比较
+        if (key === arr.length) {
           resolve(res);
         }
       };
