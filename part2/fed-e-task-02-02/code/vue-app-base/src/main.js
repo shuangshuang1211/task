@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 
-import './style.less'
+import './styles/style.less'
+import './js/test.js'
 
 Vue.config.productionTip = false
 
